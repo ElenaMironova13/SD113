@@ -1,5 +1,7 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(BoxCollider2D))]
 public class Unit : MonoBehaviour
 {
     [Header("Settings")]
@@ -8,6 +10,8 @@ public class Unit : MonoBehaviour
     [SerializeField] private float bottomBound = -10f;
     [SerializeField] private bool isLinked = false;
 
+    [Header("Chain")]
+    [SerializeField] private HingeJoint2D joint;
     [SerializeField] private Unit nextUnit;
 
     private Rigidbody2D rb;
@@ -30,10 +34,11 @@ public class Unit : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Dynamic;
         rb.gravityScale = 1;
         rb.freezeRotation = true;
+        rb.linearDamping = 0.5f;
+        rb.angularDamping = 0.5f;
         
         bc.size = new Vector2(1, 1);
         bc.offset = Vector2.zero;
-        bc.isTrigger = true;
 
         transform.position = startPos;
         ready = true;
@@ -41,66 +46,117 @@ public class Unit : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isLinked) return;
+        if (isLinked)
+        {
+            ApplyChainPhysics();
+            return;
+        }
         
         if (transform.position.y < bottomBound)
         {
             rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0;
             transform.position = new Vector3(startPos.x, topBound, 0);
         }
         else
         {
-            CheckLink();
+            CheckForLink();
         }
     }
 
-    void CheckLink()
+    void ApplyChainPhysics()
+    {
+        if (joint != null && joint.connectedBody != null)
+        {
+            Vector2 anchorPos = transform.TransformPoint(joint.anchor);
+            Vector2 connectedPos = joint.connectedBody.transform.TransformPoint(joint.connectedAnchor);
+            Vector2 toConnection = connectedPos - anchorPos;
+            
+            float distance = toConnection.magnitude;
+            float targetDistance = 1f;
+            
+            if (Mathf.Abs(distance - targetDistance) > 0.1f)
+            {
+                Vector2 correction = toConnection.normalized * (distance - targetDistance) * 2f;
+                rb.AddForce(correction, ForceMode2D.Force);
+            }
+        }
+    }
+
+    void CheckForLink()
     {
         var players = FindObjectsByType<PlayerPawn>(FindObjectsSortMode.None);
         
         foreach (var p in players)
         {
-            float dist = Vector2.Distance(transform.position, p.transform.position);
-            Debug.Log("Distance to player: " + dist);
-            
-            if (dist < 1.5f)
+            if (Vector2.Distance(transform.position, p.transform.position) < 1.5f)
             {
-                AttachToPlayer(p);
+                ConnectTo(p);
                 return;
             }
         }
     }
 
-    void AttachToPlayer(PlayerPawn player)
+    void ConnectTo(PlayerPawn player)
     {
         if (isLinked || player == null) return;
 
-        Debug.Log("Attempting to link to: " + player.name);
-
-        rb.bodyType = RigidbodyType2D.Kinematic;
-        rb.linearVelocity = Vector2.zero;
+        Rigidbody2D anchorRb = null;
         
+        if (player.AttachedUnit == null)
+        {
+            anchorRb = player.GetComponent<Rigidbody2D>();
+        }
+        else
+        {
+            Unit lastUnit = player.AttachedUnit.GetComponent<Unit>();
+            while (lastUnit != null && lastUnit.NextUnit != null)
+            {
+                lastUnit = lastUnit.NextUnit;
+            }
+            anchorRb = lastUnit?.GetComponent<Rigidbody2D>();
+        }
+
+        if (anchorRb == null) return;
+
+        joint = gameObject.AddComponent<HingeJoint2D>();
+        joint.connectedBody = anchorRb;
+        
+        Vector2 directionToAnchor = ((Vector2)anchorRb.transform.position - (Vector2)transform.position).normalized;
+        joint.connectedAnchor = -directionToAnchor * 1f;
+        joint.anchor = Vector2.zero;
+        
+        joint.useLimits = false;
+        joint.useMotor = false;
+        joint.enableCollision = false;
+
         isLinked = true;
 
         if (player.AttachedUnit == null)
         {
             player.AttachedUnit = gameObject;
-            Debug.Log("First unit linked");
         }
         else
         {
-            Unit u = player.AttachedUnit.GetComponent<Unit>();
-            while (u != null && u.NextUnit != null)
+            Unit lastUnit = player.AttachedUnit.GetComponent<Unit>();
+            while (lastUnit != null && lastUnit.NextUnit != null)
             {
-                u = u.NextUnit;
+                lastUnit = lastUnit.NextUnit;
             }
-            if (u != null) 
+            if (lastUnit != null)
             {
-                u.NextUnit = this;
-                Debug.Log("Added to chain");
+                lastUnit.NextUnit = this;
             }
         }
         
         Debug.Log("Linked: " + name);
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (isLinked) return;
+        
+        PlayerPawn p = other.GetComponent<PlayerPawn>();
+        if (p != null) ConnectTo(p);
     }
 }
