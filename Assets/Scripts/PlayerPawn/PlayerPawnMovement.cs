@@ -11,10 +11,10 @@ public class PlayerPawnMovement : MonoBehaviour
         set => moveSpeed = value;
     }
 
-    [Header("Инерция (коэффициент)")]
-    [SerializeField] private float startInertia = 0.1f;
-    [SerializeField] private float directionChangeInertia = 0.1f;
-    [SerializeField] private float stopInertia = 0.1f;
+    [Header("Инерция")]
+    [SerializeField] private float inertiaOnStart = 0.1f;
+    [SerializeField] private float inertiaOnDirectionChange = 0.1f;
+    [SerializeField] private float inertiaOnStop = 0.1f;
 
     private Rigidbody2D _rb;
     private Vector2 _inputDirection;
@@ -42,17 +42,17 @@ public class PlayerPawnMovement : MonoBehaviour
         if (_inputDirection == Vector2.zero && direction != Vector2.zero)
         {
             _currentInertiaType = InertiaType.Start;
-            _currentInertia = startInertia;
+            _currentInertia = inertiaOnStart;
         }
         else if (_inputDirection != Vector2.zero && direction != Vector2.zero && Vector2.Dot(_inputDirection, direction) < 0)
         {
             _currentInertiaType = InertiaType.DirectionChange;
-            _currentInertia = directionChangeInertia;
+            _currentInertia = inertiaOnDirectionChange;
         }
         else if (direction == Vector2.zero)
         {
             _currentInertiaType = InertiaType.Stop;
-            _currentInertia = stopInertia;
+            _currentInertia = inertiaOnStop;
         }
 
         if (direction != Vector2.zero)
@@ -70,12 +70,12 @@ public class PlayerPawnMovement : MonoBehaviour
         if (_inputDirection == Vector2.zero)
         {
             _currentInertiaType = InertiaType.Stop;
-            _currentInertia = stopInertia;
+            _currentInertia = inertiaOnStop;
         }
         else if (_currentVelocity == Vector2.zero && _inputDirection != Vector2.zero)
         {
             _currentInertiaType = InertiaType.Start;
-            _currentInertia = startInertia;
+            _currentInertia = inertiaOnStart;
         }
 
         _currentVelocity = Vector2.Lerp(_currentVelocity, targetVelocity, _currentInertia);
