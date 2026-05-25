@@ -535,7 +535,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.5, y: 0.5}
   m_EdgeRadius: 0
 --- !u!212 &4234567893
 SpriteRenderer:
@@ -656,6 +656,7 @@ MonoBehaviour:
   moveLeftKey: 97
   moveRightKey: 100
   abilityKey: 32
+  attachedUnit: {fileID: 0}
 --- !u!114 &4234567897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -668,7 +669,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0966fc95851411642a9425254bc0f9ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerPawnAbility
-  isEnabled: 1
+  isEnabled: 0
 --- !u!1 &5234567890
 GameObject:
   m_ObjectHideFlags: 0
@@ -872,10 +873,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf78c6dd92e147d4c8ca0b2e453daf38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startPosition: {x: 0, y: 10}
-  topBoundary: 10
-  bottomBoundary: -10
-  isAttached: 0
+  startPos: {x: 0, y: 10}
+  topBound: 10
+  bottomBound: -10
+  isLinked: 0
+  nextUnit: {fileID: 0}
 --- !u!61 &6234567894
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -995,9 +997,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitPrefab: {fileID: 6234567890}
   unitCount: 5
-  startPosition: {x: 0, y: 10}
-  topBoundary: 10
-  bottomBoundary: -10
+  spawnPos: {x: 0, y: 10}
+  topBound: 10
+  bottomBound: -10
   spawnInterval: 0.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

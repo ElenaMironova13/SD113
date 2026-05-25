@@ -23,7 +23,9 @@ public class PlayerPawnMovement : MonoBehaviour
     private float _currentInertia;
 
     private enum InertiaType { Start, DirectionChange, Stop }
+#pragma warning disable CS0414
     private InertiaType _currentInertiaType = InertiaType.Stop;
+#pragma warning restore CS0414
 
     private void Awake()
     {

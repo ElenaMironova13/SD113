@@ -11,8 +11,17 @@ public class PlayerPawn : MonoBehaviour
     [SerializeField] private KeyCode moveRightKey = KeyCode.D;
     [SerializeField] private KeyCode abilityKey = KeyCode.Space;
 
+    [Header("Присоединённые Unit")]
+    [SerializeField] private GameObject attachedUnit;
+
     private PlayerPawnMovement _movement;
     private PlayerPawnAbility _ability;
+
+    public GameObject AttachedUnit
+    {
+        get => attachedUnit;
+        set => attachedUnit = value;
+    }
 
     private void Awake()
     {

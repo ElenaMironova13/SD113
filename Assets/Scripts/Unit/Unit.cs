@@ -1,108 +1,106 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(BoxCollider2D))]
 public class Unit : MonoBehaviour
 {
-    [Header("Настройки")]
-    [SerializeField] private Vector2 startPosition = new Vector2(0, 10);
-    [SerializeField] private float topBoundary = 10f;
-    [SerializeField] private float bottomBoundary = -10f;
-    [SerializeField] private bool isAttached = false;
+    [Header("Settings")]
+    [SerializeField] private Vector2 startPos = new Vector2(0, 10);
+    [SerializeField] private float topBound = 10f;
+    [SerializeField] private float bottomBound = -10f;
+    [SerializeField] private bool isLinked = false;
 
-    private Rigidbody2D _rb;
-    private FixedJoint2D _joint;
-    private bool _isInitialized;
+    [SerializeField] private Unit nextUnit;
 
-    public Vector2 StartPosition
+    private Rigidbody2D rb;
+    private BoxCollider2D bc;
+    private bool ready;
+
+    public Vector2 StartPos { get => startPos; set => startPos = value; }
+    public float TopBound { get => topBound; set => topBound = value; }
+    public float BottomBound { get => bottomBound; set => bottomBound = value; }
+    public bool IsLinked { get => isLinked; set => isLinked = value; }
+    public Unit NextUnit { get => nextUnit; set => nextUnit = value; }
+
+    void Awake()
     {
-        get => startPosition;
-        set => startPosition = value;
-    }
-
-    public float TopBoundary
-    {
-        get => topBoundary;
-        set => topBoundary = value;
-    }
-
-    public float BottomBoundary
-    {
-        get => bottomBoundary;
-        set => bottomBoundary = value;
-    }
-
-    public bool IsAttached
-    {
-        get => isAttached;
-        set => isAttached = value;
-    }
-
-    private void Awake()
-    {
-        if (_isInitialized)
-            return;
-
-        _rb = GetComponent<Rigidbody2D>();
+        if (ready) return;
         
-        var collider = GetComponent<BoxCollider2D>();
-        collider.size = new Vector2(1, 1);
-        collider.offset = Vector2.zero;
-
-        var spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.color = Color.white;
-        }
-
-        transform.position = startPosition;
-        _isInitialized = true;
-    }
-
-    private void FixedUpdate()
-    {
-        if (!isAttached)
-        {
-            CheckBoundary();
-        }
-    }
-
-    private void CheckBoundary()
-    {
-        if (transform.position.y < bottomBoundary)
-        {
-            Respawn();
-        }
-    }
-
-    public void Respawn()
-    {
-        _rb.linearVelocity = Vector2.zero;
-        transform.position = new Vector3(startPosition.x, topBoundary, 0);
-    }
-
-    public void AttachTo(GameObject target)
-    {
-        if (isAttached || target == null)
-            return;
-
-        _joint = gameObject.AddComponent<FixedJoint2D>();
-        _joint.connectedBody = target.GetComponent<Rigidbody2D>();
-        _joint.connectedAnchor = Vector2.zero;
-        _joint.anchor = Vector2.zero;
+        rb = GetComponent<Rigidbody2D>();
+        bc = GetComponent<BoxCollider2D>();
         
-        isAttached = true;
+        rb.bodyType = RigidbodyType2D.Dynamic;
+        rb.gravityScale = 1;
+        rb.freezeRotation = true;
+        
+        bc.size = new Vector2(1, 1);
+        bc.offset = Vector2.zero;
+        bc.isTrigger = true;
+
+        transform.position = startPos;
+        ready = true;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    void FixedUpdate()
     {
-        if (isAttached)
-            return;
-
-        var player = collision.gameObject.GetComponent<PlayerPawn>();
-        if (player != null)
+        if (isLinked) return;
+        
+        if (transform.position.y < bottomBound)
         {
-            AttachTo(collision.gameObject);
+            rb.linearVelocity = Vector2.zero;
+            transform.position = new Vector3(startPos.x, topBound, 0);
         }
+        else
+        {
+            CheckLink();
+        }
+    }
+
+    void CheckLink()
+    {
+        var players = FindObjectsByType<PlayerPawn>(FindObjectsSortMode.None);
+        
+        foreach (var p in players)
+        {
+            float dist = Vector2.Distance(transform.position, p.transform.position);
+            Debug.Log("Distance to player: " + dist);
+            
+            if (dist < 1.5f)
+            {
+                AttachToPlayer(p);
+                return;
+            }
+        }
+    }
+
+    void AttachToPlayer(PlayerPawn player)
+    {
+        if (isLinked || player == null) return;
+
+        Debug.Log("Attempting to link to: " + player.name);
+
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.linearVelocity = Vector2.zero;
+        
+        isLinked = true;
+
+        if (player.AttachedUnit == null)
+        {
+            player.AttachedUnit = gameObject;
+            Debug.Log("First unit linked");
+        }
+        else
+        {
+            Unit u = player.AttachedUnit.GetComponent<Unit>();
+            while (u != null && u.NextUnit != null)
+            {
+                u = u.NextUnit;
+            }
+            if (u != null) 
+            {
+                u.NextUnit = this;
+                Debug.Log("Added to chain");
+            }
+        }
+        
+        Debug.Log("Linked: " + name);
     }
 }

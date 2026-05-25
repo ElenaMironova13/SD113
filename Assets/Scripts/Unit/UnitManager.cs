@@ -2,63 +2,49 @@ using UnityEngine;
 
 public class UnitManager : MonoBehaviour
 {
-    [Header("Настройки Unit")]
+    [Header("Unit Settings")]
     [SerializeField] private GameObject unitPrefab;
     [SerializeField] private int unitCount = 1;
-    [SerializeField] private Vector2 startPosition = new Vector2(0, 10);
-    [SerializeField] private float topBoundary = 10f;
-    [SerializeField] private float bottomBoundary = -10f;
+    [SerializeField] private Vector2 spawnPos = new Vector2(0, 10);
+    [SerializeField] private float topBound = 10f;
+    [SerializeField] private float bottomBound = -10f;
     [SerializeField] private float spawnInterval = 0.5f;
 
-    private float _spawnTimer;
-    private int _spawnedCount;
+    private float timer;
+    private int spawned;
 
     private void Awake()
     {
         if (unitPrefab == null)
         {
-            var existingUnit = FindFirstObjectByType<Unit>();
-            if (existingUnit != null)
-            {
-                unitPrefab = existingUnit.gameObject;
-            }
+            var u = FindFirstObjectByType<Unit>();
+            if (u != null) unitPrefab = u.gameObject;
         }
     }
 
     private void Update()
     {
-        if (_spawnedCount >= unitCount)
-            return;
-
-        _spawnTimer += Time.deltaTime;
-
-        if (_spawnTimer >= spawnInterval)
+        if (spawned >= unitCount) return;
+        timer += Time.deltaTime;
+        if (timer >= spawnInterval)
         {
             SpawnUnit();
-            _spawnTimer = 0f;
+            timer = 0f;
         }
     }
 
-    public void SpawnUnit()
+    private void SpawnUnit()
     {
-        if (_spawnedCount >= unitCount)
-            return;
+        if (spawned >= unitCount || unitPrefab == null) return;
 
-        var unitGameObject = Instantiate(unitPrefab, startPosition, Quaternion.identity);
-        
-        var unit = unitGameObject.GetComponent<Unit>();
-        if (unit != null)
+        var go = Instantiate(unitPrefab, spawnPos, Quaternion.identity);
+        var u = go.GetComponent<Unit>();
+        if (u != null)
         {
-            unit.StartPosition = startPosition;
-            unit.TopBoundary = topBoundary;
-            unit.BottomBoundary = bottomBoundary;
+            u.StartPos = spawnPos;
+            u.TopBound = topBound;
+            u.BottomBound = bottomBound;
         }
-
-        _spawnedCount++;
-    }
-
-    public void ResetUnits()
-    {
-        _spawnedCount = 0;
+        spawned++;
     }
 }
