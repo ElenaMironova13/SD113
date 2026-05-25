@@ -444,6 +444,9 @@ GameObject:
   - component: {fileID: 4234567892}
   - component: {fileID: 4234567893}
   - component: {fileID: 4234567894}
+  - component: {fileID: 4234567895}
+  - component: {fileID: 4234567896}
+  - component: {fileID: 4234567897}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -528,6 +531,60 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4234567895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4234567890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6f2d SingularObject 6a3a2a3a2a3a2a3a, type: 3}
+  m_Name:
+  serializationDataFormat: 2
+  compressionFormat: 0
+  bodyType: 1
+  simualted: 1
+  useFullKinematicContacts: 0
+  useAutoMass: 0
+  mass: 1
+  linearDrag: 0
+  angularDrag: 0.05
+  gravityScale: 1
+  material: {fileID: 0}
+  interpolate: 0
+  sleepMode: 1
+  collisionDetectionMode: 0
+  constraints: 16
+  freezeRotation: 1
+  continuousSpeculative: 0
+--- !u!114 &4234567896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4234567890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1b2c3d4e5f678901234567890123456, type: 3}
+  m_Name:
+  serializationDataFormat: 2
+--- !u!114 &4234567897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4234567890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1e2f3a4b5c672890123456789012345, type: 3}
+  m_Name:
+  serializationDataFormat: 2
+  movedirectionChangeInertia: 0.1
+  movestopInertia: 0.1
 --- !u!1 &5234567890
 GameObject:
   m_ObjectHideFlags: 0
