@@ -1,0 +1,16 @@
+{
+    "name": "Superdude.UI",
+    "rootNamespace": "Superdude.UI",
+    "references": [
+        "GUID:Superdude.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
