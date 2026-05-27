@@ -1,0 +1,214 @@
+{
+    "name": "PlayerControls",
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "actions": [
+        {
+            "name": "Move",
+            "type": "Value",
+            "id": "move_action",
+            "expectedControlType": "Vector2",
+            "processors": "",
+            "interrupts": "No"
+        },
+        {
+            "name": "Ability",
+            "type": "Button",
+            "id": "ability_action",
+            "expectedControlType": "Button",
+            "processors": "",
+            "interrupts": "No"
+        }
+    ],
+    "actionMaps": [
+        {
+            "name": "Player",
+            "id": "player_map",
+            "actions": [
+                {
+                    "name": "Move",
+                    "id": "move_action",
+                    "type": "Value",
+                    "controlType": "Vector2",
+                    "processors": "",
+                    "interrupts": "No",
+                    "bindings": [
+                        {
+                            "id": "keyboard_w",
+                            "path": "<Keyboard>/w",
+                            "interactions": "",
+                            "processors": "",
+                            "initialCycleOffset": 0,
+                            "overrideState": 0,
+                            "majorOverrideState": 0,
+                            "modifiers": ""
+                        },
+                        {
+                            "id": "keyboard_up",
+                            "path": "<Keyboard>/upArrow",
+                            "interactions": "",
+                            "processors": "",
+                            "initialCycleOffset": 0,
+                            "overrideState": 0,
+                            "majorOverrideState": 0,
+                            "modifiers": ""
+                        },
+                        {
+                            "id": "keyboard_s",
+                            "path": "<Keyboard>/s",
+                            "interactions": "",
+                            "processors": "",
+                            "initialCycleOffset": 0,
+                            "overrideState": 0,
+                            "majorOverrideState": 0,
+                            "modifiers": ""
+                        },
+                        {
+                            "id": "keyboard_down",
+                            "path": "<Keyboard>/downArrow",
+                            "interactions": "",
+                            "processors": "",
+                            "initialCycleOffset": 0,
+                            "overrideState": 0,
+                            "majorOverrideState": 0,
+                            "modifiers": ""
+                        },
+                        {
+                            "id": "keyboard_a",
+                            "path": "<Keyboard>/a",
+                            "interactions": "",
+                            "processors": "",
+                            "initialCycleOffset": 0,
+                            "overrideState": 0,
+                            "majorOverrideState": 0,
+                            "modifiers": ""
+                        },
+                        {
+                            "id": "keyboard_left",
+                            "path": "<Keyboard>/leftArrow",
+                            "interactions": "",
+                            "processors": "",
+                            "initialCycleOffset": 0,
+                            "overrideState": 0,
+                            "majorOverrideState": 0,
+                            "modifiers": ""
+                        },
+                        {
+                            "id": "keyboard_d",
+                            "path": "<Keyboard>/d",
+                            "interactions": "",
+                            "processors": "",
+                            "initialCycleOffset": 0,
+                            "overrideState": 0,
+                            "majorOverrideState": 0,
+                            "modifiers": ""
+                        },
+                        {
+                            "id": "keyboard_right",
+                            "path": "<Keyboard>/rightArrow",
+                            "interactions": "",
+                            "processors": "",
+                            "initialCycleOffset": 0,
+                            "overrideState": 0,
+                            "majorOverrideState": 0,
+                            "modifiers": ""
+                        },
+                        {
+                            "id": "gamepad_leftstick",
+                            "path": "<Gamepad>/leftStick",
+                            "interactions": "",
+                            "processors": "NormalizeVector2",
+                            "initialCycleOffset": 0,
+                            "overrideState": 0,
+                            "majorOverrideState": 0,
+                            "modifiers": ""
+                        },
+                        {
+                            "id": "joystick_leftstick",
+                            "path": "<Joystick>/leftStick",
+                            "interactions": "",
+                            "processors": "NormalizeVector2",
+                            "initialCycleOffset": 0,
+                            "overrideState": 0,
+                            "majorOverrideState": 0,
+                            "modifiers": ""
+                        },
+                        {
+                            "id": "touch_primaryposition",
+                            "path": "<Touchscreen>/primaryPosition",
+                            "interactions": "",
+                            "processors": "Normalize(primary,touch)",
+                            "initialCycleOffset": 0,
+                            "overrideState": 0,
+                            "majorOverrideState": 0,
+                            "modifiers": ""
+                        },
+                        {
+                            "id": "touch_position",
+                            "path": "<Touchscreen>/position",
+                            "interactions": "",
+                            "processors": "",
+                            "initialCycleOffset": 0,
+                            "overrideState": 0,
+                            "majorOverrideState": 0,
+                            "modifiers": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Ability",
+                    "id": "ability_action",
+                    "type": "Button",
+                    "controlType": "Button",
+                    "processors": "",
+                    "interrupts": "No",
+                    "bindings": [
+                        {
+                            "id": "keyboard_space",
+                            "path": "<Keyboard>/space",
+                            "interactions": "",
+                            "processors": "",
+                            "initialCycleOffset": 0,
+                            "overrideState": 0,
+                            "majorOverrideState": 0,
+                            "modifiers": ""
+                        },
+                        {
+                            "id": "gamepad_south",
+                            "path": "<Gamepad>/buttonSouth",
+                            "interactions": "",
+                            "processors": "",
+                            "initialCycleOffset": 0,
+                            "overrideState": 0,
+                            "majorOverrideState": 0,
+                            "modifiers": ""
+                        },
+                        {
+                            "id": "gamepad_a",
+                            "path": "<Gamepad>/a",
+                            "interactions": "",
+                            "processors": "",
+                            "initialCycleOffset": 0,
+                            "overrideState": 0,
+                            "majorOverrideState": 0,
+                            "modifiers": ""
+                        },
+                        {
+                            "id": "touch_primarytap",
+                            "path": "<Touchscreen>/primaryTap",
+                            "interactions": "",
+                            "processors": "",
+                            "initialCycleOffset": 0,
+                            "overrideState": 0,
+                            "majorOverrideState": 0,
+                            "modifiers": ""
+                        }
+                    ]
+                }
+            ],
+            "deviceInfos": []
+        }
+    ],
+    "controlSchemes": [],
+    "matchedDevices": [],
+    "matchedDevicesInputBehavior": ""
+}
