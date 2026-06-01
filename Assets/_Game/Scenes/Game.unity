@@ -149,8 +149,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Superdude.Core::Superdude.Core.ObjectPool
   _prewarmEntries:
-  - Prefab: {fileID: 0}
-    Count: 0
+  - Prefab: {fileID: 6214368114364551285, guid: 5264a6e117fb6fa48af70a4abacf3488, type: 3}
+    Count: 15
 --- !u!4 &857667758
 Transform:
   m_ObjectHideFlags: 0
@@ -227,9 +227,9 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
-  m_Depth: -1
+  m_Depth: -1.15
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -381,6 +381,9 @@ GameObject:
   - component: {fileID: 1904619157}
   - component: {fileID: 1904619160}
   - component: {fileID: 1904619161}
+  - component: {fileID: 1904619163}
+  - component: {fileID: 1904619162}
+  - component: {fileID: 1904619164}
   m_Layer: 0
   m_Name: Systems
   m_TagString: Untagged
@@ -456,6 +459,44 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Superdude.Core::DevBootstrap
   AutoStartGame: 1
+--- !u!114 &1904619162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1904619156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0d35c8cac567ec43b3e7b0e0991fb77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Superdude.Gameplay::Superdude.Gameplay.ChainInitializer
+  _playerTransform: {fileID: 3928828485361478340, guid: f48881918ef973a419cc24de2342fa04, type: 3}
+  _segmentPrefab: {fileID: 6214368114364551285, guid: 5264a6e117fb6fa48af70a4abacf3488, type: 3}
+--- !u!114 &1904619163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1904619156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dce61054cbdd6ba4aa493533df35f03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Superdude.Gameplay::Superdude.Gameplay.ChainManager
+--- !u!114 &1904619164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1904619156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e73ff1c409e1ac247a1661058f7d4303, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChainTest
 --- !u!1001 &4990263481444534732
 PrefabInstance:
   m_ObjectHideFlags: 0
