@@ -2,7 +2,8 @@
     "name": "Superdude.UI",
     "rootNamespace": "Superdude.UI",
     "references": [
-        "GUID:Superdude.Core"
+        "Superdude.Core",
+        "Superdude.Data"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

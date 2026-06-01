@@ -2,7 +2,8 @@
     "name": "Superdude.Gameplay",
     "rootNamespace": "Superdude.Gameplay",
     "references": [
-        "GUID:Superdude.Core"
+        "Superdude.Core",
+        "Superdude.Data"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
