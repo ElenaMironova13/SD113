@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16a18708b0b673640ab9a39eaff66772, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: Superdude.Data::Superdude.Core.GameConfig
+  PlayerSpeed: 5
+  RoundDuration: 60
+  SegmentsPerPassenger: 1
+  SegmentSpacing: 0.4
+  SpawnInterval: 1.5
+  SpawnIntervalMin: 0.4
+  SpawnIntervalDecrement: 0.1
+  SpawnWidthFraction: 0.9
+  PassengerWeight: 6
+  SuitcaseWeight: 3
+  PosterWeight: 1
+  SpeedBoostMultiplier: 1.5
+  SpeedBoostDuration: 3

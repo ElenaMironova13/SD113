@@ -1,9 +1,7 @@
 {
     "name": "Superdude.Data",
     "rootNamespace": "Superdude.Core",
-    "references": [
-        "GUID:Superdude.Core"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
