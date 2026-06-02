@@ -253,7 +253,7 @@ Transform:
   m_GameObject: {fileID: 941071941}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -382,7 +382,6 @@ GameObject:
   - component: {fileID: 1904619160}
   - component: {fileID: 1904619161}
   - component: {fileID: 1904619163}
-  - component: {fileID: 1904619162}
   - component: {fileID: 1904619164}
   m_Layer: 0
   m_Name: Systems
@@ -424,7 +423,7 @@ Transform:
   m_GameObject: {fileID: 1904619156}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10, y: -0, z: -0}
+  m_LocalPosition: {x: 0, y: -0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -459,20 +458,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Superdude.Core::DevBootstrap
   AutoStartGame: 1
---- !u!114 &1904619162
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1904619156}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0d35c8cac567ec43b3e7b0e0991fb77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Superdude.Gameplay::Superdude.Gameplay.ChainInitializer
-  _playerTransform: {fileID: 3928828485361478340, guid: f48881918ef973a419cc24de2342fa04, type: 3}
-  _segmentPrefab: {fileID: 6214368114364551285, guid: 5264a6e117fb6fa48af70a4abacf3488, type: 3}
 --- !u!114 &1904619163
 MonoBehaviour:
   m_ObjectHideFlags: 0

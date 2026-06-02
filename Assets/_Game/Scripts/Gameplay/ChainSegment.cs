@@ -1,31 +1,36 @@
-using System.Collections.Generic;
 using UnityEngine;
 using Superdude.Core;
 
 namespace Superdude.Gameplay
 {
     /// <summary>
-    /// Одно звено цепочки. Следует за предыдущим звеном (или головой)
-    /// с задержкой по истории позиций — стандартный алгоритм змейки.
-    ///
-    /// Не знает о ChainManager — получает ссылку на цель (Target)
-    /// и индекс в цепочке (SegmentIndex) снаружи.
-    ///
-    /// Реализует IPoolable — сбрасывает состояние при возврате в пул.
+    /// Одно звено цепочки с симуляцией верёвочной физики (Verlet Integration).
+    /// Звено тянется к предыдущему звену (Target), но при этом
+    /// испытывает гравитацию — провисает вниз как живая цепочка.
     /// </summary>
     [RequireComponent(typeof(SpriteRenderer))]
     public class ChainSegment : MonoBehaviour, IPoolable
     {
-        // Трансформ, за которым следует это звено (предыдущее звено или голова)
-        public Transform Target { get; set; }
+        public Transform Target       { get; set; }
+        public int       SegmentIndex { get; set; }
+        public float     Spacing      { get; set; } = 0.4f;
 
-        // Позиция этого звена в цепочке (0 = ближайшее к голове)
-        public int SegmentIndex { get; set; }
+        [Header("Physics Simulation")]
+        [Tooltip("Сила гравитации на звено (вниз)")]
+        public float Gravity        = 9.8f;
 
-        // Расстояние которое нужно поддерживать до Target
-        public float Spacing { get; set; } = 0.4f;
+        [Tooltip("Затухание скорости [0..1] — выше = меньше болтанки")]
+        [Range(0.8f, 0.99f)]
+        public float Damping        = 0.95f;
+
+        [Tooltip("Жёсткость пружины к Target [0..1] — выше = цепочка короче провисает")]
+        [Range(0.1f, 1f)]
+        public float Stiffness      = 0.5f;
 
         private SpriteRenderer _sprite;
+
+        // Verlet: текущая и предыдущая позиция
+        private Vector2 _velocity = Vector2.zero;
 
         // ── Lifecycle ────────────────────────────────────────────────────
 
@@ -38,12 +43,31 @@ namespace Superdude.Gameplay
         {
             if (Target == null) return;
 
-            // Двигаемся к Target только если дальше Spacing
-            var delta = Target.position - transform.position;
-            if (delta.magnitude > Spacing)
+            // 1. Применяем гравитацию
+            _velocity += Vector2.down * Gravity * Time.deltaTime;
+
+            // 2. Применяем затухание
+            _velocity *= Damping;
+
+            // 3. Двигаем позицию по скорости
+            Vector2 pos = transform.position;
+            pos += _velocity * Time.deltaTime;
+
+            // 4. Ограничение расстояния до Target (пружина)
+            Vector2 targetPos = Target.position;
+            Vector2 delta     = targetPos - pos;
+            float   dist      = delta.magnitude;
+
+            if (dist > Spacing)
             {
-                transform.position = Target.position - delta.normalized * Spacing;
+                // Тянем к Target с силой Stiffness
+                Vector2 correction = delta.normalized * (dist - Spacing);
+                pos       += correction * Stiffness;
+                // Корректируем скорость чтобы не накапливать ошибку
+                _velocity += correction * Stiffness / Time.deltaTime * 0.01f;
             }
+
+            transform.position = new Vector3(pos.x, pos.y, transform.position.z);
         }
 
         // ── IPoolable ────────────────────────────────────────────────────
@@ -52,20 +76,18 @@ namespace Superdude.Gameplay
         {
             Target       = null;
             SegmentIndex = 0;
+            _velocity    = Vector2.zero;
         }
 
         public void OnDespawn()
         {
             Target       = null;
             SegmentIndex = 0;
+            _velocity    = Vector2.zero;
         }
 
         // ── Visual ───────────────────────────────────────────────────────
 
-        /// <summary>
-        /// Меняет прозрачность в зависимости от позиции в цепочке —
-        /// дальние звенья чуть прозрачнее.
-        /// </summary>
         public void UpdateVisual(int totalSegments)
         {
             if (_sprite == null) return;
