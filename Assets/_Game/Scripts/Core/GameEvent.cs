@@ -18,9 +18,9 @@ namespace Superdude.Core
     }
 
     // ── Game State ───────────────────────────────────────────────────────
-    public class GameStartedEvent   : GameEvent { }
-    public class GameOverEvent      : GameEvent { }
-    public class GameRestartedEvent : GameEvent { }
+    public class GameStartedEvent       : GameEvent { }
+    public class GameOverEvent          : GameEvent { }
+    public class GameRestartedEvent     : GameEvent { }
     public class MainMenuRequestedEvent : GameEvent { }
 
     // ── Chain ────────────────────────────────────────────────────────────
@@ -61,4 +61,8 @@ namespace Superdude.Core
         public float Multiplier;
         public float Duration;
     }
+
+    // ── Passenger ────────────────────────────────────────────────────────
+    /// <summary>Пассажир вышел за нижний край — не был пойман.</summary>
+    public class PassengerMissedEvent : GameEvent { }
 }
