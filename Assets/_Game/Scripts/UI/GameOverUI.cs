@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Superdude.Core;
+using Superdude.Gameplay;
 
 namespace Superdude.UI
 {
@@ -26,6 +27,7 @@ namespace Superdude.UI
                 });
 
             EventBus.Subscribe<ScoreFinalizedEvent>(OnScoreFinalized);
+            EventBus.Subscribe<GameOverEvent>(OnGameOver);
             EventBus.Subscribe<GameStartedEvent>(OnGameStarted);
             EventBus.Subscribe<GameRestartedEvent>(OnGameRestarted);
 
@@ -36,8 +38,24 @@ namespace Superdude.UI
         private void OnDestroy()
         {
             EventBus.Unsubscribe<ScoreFinalizedEvent>(OnScoreFinalized);
+            EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
             EventBus.Unsubscribe<GameStartedEvent>(OnGameStarted);
             EventBus.Unsubscribe<GameRestartedEvent>(OnGameRestarted);
+        }
+
+        private void OnGameOver(GameOverEvent e)
+        {
+            // Показываем панель сразу при GameOver с текущими данными
+            // ScoreFinalizedEvent обновит текст когда придёт
+            if (ServiceLocator.IsRegistered<ScoreSystem>())
+            {
+                int score = ServiceLocator.Get<ScoreSystem>().CurrentScore;
+                int best  = ServiceLocator.IsRegistered<SaveSystem>()
+                    ? ServiceLocator.Get<SaveSystem>().BestScore : 0;
+                if (_scoreText     != null) _scoreText.text     = $"Спасено: {score}";
+                if (_bestScoreText != null) _bestScoreText.text = $"Рекорд: {best}";
+            }
+            gameObject.SetActive(true);
         }
 
         private void OnScoreFinalized(ScoreFinalizedEvent e)

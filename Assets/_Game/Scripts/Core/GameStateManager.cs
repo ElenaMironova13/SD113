@@ -95,7 +95,7 @@ namespace Superdude.Core
         private void OnMainMenuRequested(MainMenuRequestedEvent e)
         {
             TransitionTo(GameState.MainMenu);
-            SceneLoader.LoadMainMenu();
+            // Не перезагружаем сцену — UI сам покажет MainMenu через событие
         }
 
         // ── FSM core ─────────────────────────────────────────────────────
