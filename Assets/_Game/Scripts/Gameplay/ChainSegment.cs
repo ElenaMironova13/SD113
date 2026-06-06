@@ -3,11 +3,6 @@ using Superdude.Core;
 
 namespace Superdude.Gameplay
 {
-    /// <summary>
-    /// Одно звено цепочки с симуляцией верёвочной физики (Verlet Integration).
-    /// Звено тянется к предыдущему звену (Target), но при этом
-    /// испытывает гравитацию — провисает вниз как живая цепочка.
-    /// </summary>
     [RequireComponent(typeof(SpriteRenderer))]
     public class ChainSegment : MonoBehaviour, IPoolable
     {
@@ -17,20 +12,18 @@ namespace Superdude.Gameplay
 
         [Header("Physics Simulation")]
         [Tooltip("Сила гравитации на звено (вниз)")]
-        public float Gravity        = 9.8f;
+        public float Gravity   = 9.8f;
 
-        [Tooltip("Затухание скорости [0..1] — выше = меньше болтанки")]
+        [Tooltip("Затухание скорости [0..1]")]
         [Range(0.8f, 0.99f)]
-        public float Damping        = 0.95f;
+        public float Damping   = 0.95f;
 
-        [Tooltip("Жёсткость пружины к Target [0..1] — выше = цепочка короче провисает")]
+        [Tooltip("Жёсткость пружины к Target [0..1]")]
         [Range(0.1f, 1f)]
-        public float Stiffness      = 0.5f;
+        public float Stiffness = 0.5f;
 
         private SpriteRenderer _sprite;
-
-        // Verlet: текущая и предыдущая позиция
-        private Vector2 _velocity = Vector2.zero;
+        private Vector2        _velocity = Vector2.zero;
 
         // ── Lifecycle ────────────────────────────────────────────────────
 
@@ -43,28 +36,36 @@ namespace Superdude.Gameplay
         {
             if (Target == null) return;
 
-            // 1. Применяем гравитацию
-            _velocity += Vector2.down * Gravity * Time.deltaTime;
+            float dt = Time.deltaTime;
+            if (dt <= 0f) return; // пауза — пропускаем кадр
 
-            // 2. Применяем затухание
+            // 1. Гравитация и затухание
+            _velocity += Vector2.down * Gravity * dt;
             _velocity *= Damping;
 
-            // 3. Двигаем позицию по скорости
+            // 2. Двигаем позицию
             Vector2 pos = transform.position;
-            pos += _velocity * Time.deltaTime;
+            pos += _velocity * dt;
 
-            // 4. Ограничение расстояния до Target (пружина)
+            // 3. Пружина к Target — только если есть ненулевое расстояние
             Vector2 targetPos = Target.position;
             Vector2 delta     = targetPos - pos;
             float   dist      = delta.magnitude;
 
-            if (dist > Spacing)
+            if (dist > Spacing && dist > 0.0001f) // защита от деления на 0
             {
-                // Тянем к Target с силой Stiffness
-                Vector2 correction = delta.normalized * (dist - Spacing);
+                Vector2 dir        = delta / dist; // вручную нормализуем
+                Vector2 correction = dir * (dist - Spacing);
                 pos       += correction * Stiffness;
-                // Корректируем скорость чтобы не накапливать ошибку
-                _velocity += correction * Stiffness / Time.deltaTime * 0.01f;
+                _velocity += correction * (Stiffness * 0.1f); // без деления на dt
+            }
+
+            // 4. Финальная проверка перед записью
+            if (float.IsNaN(pos.x) || float.IsNaN(pos.y))
+            {
+                Debug.LogWarning($"[ChainSegment] NaN позиция на {name}, сбрасываю к Target");
+                pos       = targetPos;
+                _velocity = Vector2.zero;
             }
 
             transform.position = new Vector3(pos.x, pos.y, transform.position.z);
