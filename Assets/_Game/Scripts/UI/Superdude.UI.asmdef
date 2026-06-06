@@ -3,7 +3,9 @@
     "rootNamespace": "Superdude.UI",
     "references": [
         "Superdude.Core",
-        "Superdude.Data"
+        "Superdude.Data",
+        "Superdude.Gameplay",
+        "UnityEngine.UI"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
