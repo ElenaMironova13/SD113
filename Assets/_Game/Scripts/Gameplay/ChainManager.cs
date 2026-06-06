@@ -7,11 +7,8 @@ namespace Superdude.Gameplay
     public class ChainManager : MonoBehaviour
     {
         [Header("References")]
-        [Tooltip("Transform суперчувака — голова цепочки")]
-        [SerializeField] private Transform _playerTransform;
-
-        [Tooltip("Префаб одного звена цепочки (ChainSegment + PooledObject)")]
-        [SerializeField] private GameObject _segmentPrefab;
+        [SerializeField] private Transform   _playerTransform;
+        [SerializeField] private GameObject  _segmentPrefab;
 
         private readonly List<ChainSegment> _segments = new List<ChainSegment>();
 
@@ -42,7 +39,6 @@ namespace Superdude.Gameplay
 
             _pool   = ServiceLocator.Get<ObjectPool>();
             _config = ServiceLocator.Get<GameConfig>();
-
             Debug.Log("[ChainManager] Инициализирован. Head: " + _playerTransform.name);
         }
 
@@ -71,17 +67,37 @@ namespace Superdude.Gameplay
             EventBus.Publish(new ChainGrewEvent { NewLength = _segments.Count });
         }
 
+        /// <summary>
+        /// Разрывает цепочку с breakIndex.
+        /// Оторвавшиеся звенья объединяются в FreeChainGroup и падают свободно.
+        /// При касании игрока с любым из них — вся группа присоединяется обратно.
+        /// </summary>
         public void BreakAt(int breakIndex)
         {
             if (breakIndex < 0 || breakIndex >= _segments.Count) return;
 
             int lost = _segments.Count - breakIndex;
 
-            for (int i = _segments.Count - 1; i >= breakIndex; i--)
+            // Собираем группу из оторвавшихся звеньев
+            var freeSegments = new List<FreeSegment>();
+
+            for (int i = breakIndex; i < _segments.Count; i++)
             {
-                _segments[i].GetComponent<PooledObject>().Release();
-                _segments.RemoveAt(i);
+                var go   = _segments[i].gameObject;
+                var free = go.GetComponent<FreeSegment>();
+                if (free == null)
+                    free = go.AddComponent<FreeSegment>();
+                freeSegments.Add(free);
             }
+
+            // Создаём группу — все звенья знают о ней
+            var group = new FreeChainGroup(freeSegments, this);
+
+            foreach (var free in freeSegments)
+                free.Activate(Vector2.zero, group);
+
+            // Убираем из активной цепочки
+            _segments.RemoveRange(breakIndex, _segments.Count - breakIndex);
 
             RefreshIndices();
             RefreshVisuals();
@@ -108,14 +124,14 @@ namespace Superdude.Gameplay
         private void SpawnSegment()
         {
             var spawnPos = _segments.Count > 0
-                ? _segments[^1].transform.position
+                ? _segments[_segments.Count - 1].transform.position
                 : _playerTransform.position;
 
             var go      = _pool.Get(_segmentPrefab, spawnPos);
             var segment = go.GetComponent<ChainSegment>();
 
             segment.Target  = _segments.Count > 0
-                ? _segments[^1].transform
+                ? _segments[_segments.Count - 1].transform
                 : _playerTransform;
             segment.Spacing = _config.SegmentSpacing;
 
@@ -137,12 +153,17 @@ namespace Superdude.Gameplay
         private void ClearAll()
         {
             for (int i = _segments.Count - 1; i >= 0; i--)
-                if (_segments[i] != null)
-                    _segments[i].GetComponent<PooledObject>().Release();
+            {
+                if (_segments[i] == null) continue;
+                var go   = _segments[i].gameObject;
+                var free = go.GetComponent<FreeSegment>();
+                if (free != null) free.Release();
+                else go.GetComponent<PooledObject>().Release();
+            }
             _segments.Clear();
         }
 
-        private void OnGameOver(GameOverEvent e)         => ClearAll();
+        private void OnGameOver(GameOverEvent e)           => ClearAll();
         private void OnGameRestarted(GameRestartedEvent e) => ClearAll();
     }
 }
