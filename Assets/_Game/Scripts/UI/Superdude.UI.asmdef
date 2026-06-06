@@ -4,8 +4,7 @@
     "references": [
         "Superdude.Core",
         "Superdude.Data",
-        "Superdude.Gameplay",
-        "UnityEngine.UI"
+        "Superdude.Gameplay"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
