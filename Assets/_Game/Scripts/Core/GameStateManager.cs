@@ -129,6 +129,7 @@ namespace Superdude.Core
 
                 case GameState.GameOver:
                     Time.timeScale = 0f;
+                    EventBus.Publish(new GameOverEvent());
                     break;
 
                 case GameState.MainMenu:
