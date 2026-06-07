@@ -48,6 +48,7 @@ namespace Superdude.Gameplay
             EventBus.Subscribe<PauseToggledEvent>(OnPauseToggled);
             EventBus.Subscribe<GameOverEvent>(OnGameOver);
             EventBus.Subscribe<SpeedBoostEvent>(OnSpeedBoost);
+            EventBus.Subscribe<MainMenuRequestedEvent>(OnMainMenu);
         }
 
         private void OnDisable()
@@ -58,6 +59,7 @@ namespace Superdude.Gameplay
             EventBus.Unsubscribe<PauseToggledEvent>(OnPauseToggled);
             EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
             EventBus.Unsubscribe<SpeedBoostEvent>(OnSpeedBoost);
+            EventBus.Unsubscribe<MainMenuRequestedEvent>(OnMainMenu);
         }
 
         // ── Event handlers ───────────────────────────────────────────────
@@ -71,6 +73,8 @@ namespace Superdude.Gameplay
             // после снятия паузы игрок продолжит двигаться в том же направлении
             _movement.Direction = e.IsPaused ? Vector2.zero : _lastDirection;
         }
+
+        private void OnMainMenu(MainMenuRequestedEvent e) => SetActive(false);
 
         private void OnGameOver(GameOverEvent e)
         {

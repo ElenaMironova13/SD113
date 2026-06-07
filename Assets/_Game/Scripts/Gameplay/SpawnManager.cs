@@ -42,6 +42,7 @@ namespace Superdude.Gameplay
             EventBus.Subscribe<GameStartedEvent>(OnGameStarted);
             EventBus.Subscribe<GameRestartedEvent>(OnGameStarted);
             EventBus.Subscribe<GameOverEvent>(OnGameOver);
+            EventBus.Subscribe<MainMenuRequestedEvent>(OnMainMenu);
             EventBus.Subscribe<PassengerMissedEvent>(OnPassengerMissed);
         }
 
@@ -50,6 +51,7 @@ namespace Superdude.Gameplay
             EventBus.Unsubscribe<GameStartedEvent>(OnGameStarted);
             EventBus.Unsubscribe<GameRestartedEvent>(OnGameStarted);
             EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
+            EventBus.Unsubscribe<MainMenuRequestedEvent>(OnMainMenu);
             EventBus.Unsubscribe<PassengerMissedEvent>(OnPassengerMissed);
         }
 
@@ -71,6 +73,15 @@ namespace Superdude.Gameplay
         /// Штраф за пропущенного пассажира — ускоряем интервал спауна.
         /// Больше давление → игрок вынужден активнее двигаться.
         /// </summary>
+        private void OnMainMenu(MainMenuRequestedEvent e)
+        {
+            if (_spawnCoroutine != null)
+            {
+                StopCoroutine(_spawnCoroutine);
+                _spawnCoroutine = null;
+            }
+        }
+
         private void OnPassengerMissed(PassengerMissedEvent e)
         {
             _currentInterval = Mathf.Max(

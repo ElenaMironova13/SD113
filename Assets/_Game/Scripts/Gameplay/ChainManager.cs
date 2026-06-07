@@ -46,12 +46,14 @@ namespace Superdude.Gameplay
         {
             EventBus.Subscribe<GameOverEvent>(OnGameOver);
             EventBus.Subscribe<GameRestartedEvent>(OnGameRestarted);
+            EventBus.Subscribe<MainMenuRequestedEvent>(OnMainMenu);
         }
 
         private void OnDisable()
         {
             EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
             EventBus.Unsubscribe<GameRestartedEvent>(OnGameRestarted);
+            EventBus.Unsubscribe<MainMenuRequestedEvent>(OnMainMenu);
         }
 
         // ── Public API ───────────────────────────────────────────────────
@@ -164,6 +166,7 @@ namespace Superdude.Gameplay
         }
 
         private void OnGameOver(GameOverEvent e)           => ClearAll();
+        private void OnMainMenu(MainMenuRequestedEvent e)    => ClearAll();
         private void OnGameRestarted(GameRestartedEvent e) => ClearAll();
     }
 }

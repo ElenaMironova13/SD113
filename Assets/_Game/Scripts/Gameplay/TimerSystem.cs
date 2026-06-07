@@ -1,18 +1,9 @@
+using System.Collections;
 using UnityEngine;
 using Superdude.Core;
 
 namespace Superdude.Gameplay
 {
-    /// <summary>
-    /// Обратный отсчёт раунда.
-    /// Использует Time.unscaledDeltaTime — не замораживается при паузе.
-    /// Только TimerSystem знает о времени — UI и другие системы
-    /// подписываются на события.
-    ///
-    /// Публикует:
-    ///   TimerTickEvent  { float Remaining } — каждую секунду
-    ///   TimerEndedEvent                     — когда время вышло
-    /// </summary>
     public class TimerSystem : MonoBehaviour
     {
         public float Remaining { get; private set; }
@@ -20,15 +11,12 @@ namespace Superdude.Gameplay
         private GameConfig       _config;
         private GameStateManager _state;
         private bool             _running;
-        private float            _nextTick; // время следующего тика (в unscaled time)
-
-        // ── Lifecycle ────────────────────────────────────────────────────
+        private float            _nextTick;
 
         private void Start()
         {
             _config = ServiceLocator.Get<GameConfig>();
             _state  = ServiceLocator.Get<GameStateManager>();
-
             ServiceLocator.Register<TimerSystem>(this);
         }
 
@@ -37,6 +25,7 @@ namespace Superdude.Gameplay
             EventBus.Subscribe<GameStartedEvent>(OnGameStarted);
             EventBus.Subscribe<GameRestartedEvent>(OnGameStarted);
             EventBus.Subscribe<GameOverEvent>(OnGameOver);
+            EventBus.Subscribe<MainMenuRequestedEvent>(OnMainMenu);
         }
 
         private void OnDisable()
@@ -44,20 +33,16 @@ namespace Superdude.Gameplay
             EventBus.Unsubscribe<GameStartedEvent>(OnGameStarted);
             EventBus.Unsubscribe<GameRestartedEvent>(OnGameStarted);
             EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
+            EventBus.Unsubscribe<MainMenuRequestedEvent>(OnMainMenu);
         }
-
-        // ── Update ───────────────────────────────────────────────────────
 
         private void Update()
         {
             if (!_running) return;
-
-            // Не считаем время во время паузы
             if (_state.IsState(GameState.Paused)) return;
 
             Remaining -= Time.deltaTime;
 
-            // Тик каждую секунду
             if (Time.unscaledTime >= _nextTick)
             {
                 _nextTick += 1f;
@@ -75,21 +60,16 @@ namespace Superdude.Gameplay
             }
         }
 
-        // ── Event handlers ───────────────────────────────────────────────
-
-        private void OnGameStarted(GameStartedEvent e)   => StartTimer();
-        private void OnGameStarted(GameRestartedEvent e) => StartTimer();
-        private void OnGameOver(GameOverEvent e)         => _running = false;
-
-        // ── Internal ─────────────────────────────────────────────────────
+        private void OnGameStarted(GameStartedEvent e)    => StartTimer();
+        private void OnGameStarted(GameRestartedEvent e)  => StartTimer();
+        private void OnGameOver(GameOverEvent e)          => _running = false;
+        private void OnMainMenu(MainMenuRequestedEvent e) => _running = false;
 
         private void StartTimer()
         {
             Remaining = _config.RoundDuration;
             _nextTick = Time.unscaledTime + 1f;
             _running  = true;
-
-            // Публикуем начальный тик чтобы HUD сразу показал время
             EventBus.Publish(new TimerTickEvent { Remaining = Remaining });
         }
     }

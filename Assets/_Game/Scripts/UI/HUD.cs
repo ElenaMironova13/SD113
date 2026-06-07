@@ -17,6 +17,7 @@ namespace Superdude.UI
             EventBus.Subscribe<GameStartedEvent>(OnGameStarted);
             EventBus.Subscribe<GameRestartedEvent>(OnGameRestarted);
             EventBus.Subscribe<GameOverEvent>(OnGameOver);
+            EventBus.Subscribe<MainMenuRequestedEvent>(OnMainMenu);
             gameObject.SetActive(false);
         }
 
@@ -27,11 +28,13 @@ namespace Superdude.UI
             EventBus.Unsubscribe<GameStartedEvent>(OnGameStarted);
             EventBus.Unsubscribe<GameRestartedEvent>(OnGameRestarted);
             EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
+            EventBus.Unsubscribe<MainMenuRequestedEvent>(OnMainMenu);
         }
 
         private void OnGameStarted(GameStartedEvent e)    { gameObject.SetActive(true); SetScore(0); }
         private void OnGameRestarted(GameRestartedEvent e) { gameObject.SetActive(true); SetScore(0); }
         private void OnGameOver(GameOverEvent e)           => gameObject.SetActive(false);
+        private void OnMainMenu(MainMenuRequestedEvent e)    => gameObject.SetActive(false);
 
         private void OnTimerTick(TimerTickEvent e)
         {
